@@ -1,0 +1,19 @@
+Sub Delete_Row()
+    Dim StartRow
+    Dim EndRow
+    Dim StartCol
+    Dim EndCol
+    
+    Dim i
+    
+    StartRow = 2
+    EndRow = 50000
+    StartCol = 8
+    EndCol = 335
+    
+    For i = StartRow To EndRow
+        If Application.WorksheetFunction.Sum(Range(Cells(i, StartCol), Cells(i, EndCol))) = 0 Then
+            Rows(i).Delete
+        End If
+    Next i
+End Sub

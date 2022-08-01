@@ -1,0 +1,21 @@
+Sub Is_Written()
+    Dim i
+    Dim j
+    Dim StartRow
+    Dim EndRow
+    Dim StartCol
+    Dim EndCol
+    
+    StartRow = 2
+    EndRow = 667
+    StartCol = 8
+    EndCol = 69
+    
+    For i = StartRow To EndRow
+        For j = StartCol To EndCol
+            If Cells(i, j).Value > 0 Then
+                Cells(i, j).Value = 1
+            End If
+        Next j
+    Next i
+End Sub

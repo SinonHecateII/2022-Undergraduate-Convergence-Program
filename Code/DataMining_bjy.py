@@ -9,14 +9,21 @@ import time
 #MySQL 연결
 conn = ImportantData.conn
 
-token = ImportantData.token
+token = ImportantData.Token_bjy
 head = {'Authorization' : 'token %s' % token}
-
-i = 0
 
 with conn:
     with conn.cursor() as cur:
-        while(i < 100000):
+        sql = "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE table_schema = 'sys' AND table_name = 'github_db'"  # 테이블의 컬럼명을 가져온다.
+        cur.execute(sql)
+        result = cur.fetchall()
+
+        LanguageList = []  #처음 실행했을 때 칼럼명을 저장
+        for i in range(0, len(result)):
+            LanguageList.append(result[i][0])
+
+        i = 46186
+        while(i < 70000):
             url = 'https://api.github.com/user/' + str(i)  #id로 유저 이름 찾기
             UrlUser = requests.get(url, headers=head)
             
@@ -58,16 +65,14 @@ with conn:
                         conn.commit()
 
                         for k in range(0, len(LanguageKey)):
-                            sql = "SELECT COUNT(*) cnt FROM information_schema.COLUMNS WHERE table_schema = 'sys' AND table_name = 'github_db' and column_name=%s"
-                            cur.execute(sql, LanguageKey[k])
-                            result = cur.fetchall()
-                            if(result != ((1,),)):  #해당 이름의 칼럼이 존재하지 않는다면
+                            if LanguageKey[k] not in LanguageList:  #해당 이름의 칼럼이 리스트에 존재하지 않는다면
                                 if(str.isalnum(LanguageKey[k]) == False):  #C++과 같은 특수문자인지 검사
                                     sql = "ALTER TABLE github_db add `" + LanguageKey[k] + "` int NOT NULL default '0'"
                                 else:
                                     sql = "ALTER TABLE github_db add " + LanguageKey[k] + " int NOT NULL default '0'"
                                 cur.execute(sql)
                                 conn.commit()
+                                LanguageList.append(LanguageKey[k])
 
                             #해당 언어 Byte 수 삽입    
                             if(str.isalnum(LanguageKey[k]) == False):

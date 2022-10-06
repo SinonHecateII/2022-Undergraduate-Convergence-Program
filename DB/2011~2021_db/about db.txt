@@ -1,0 +1,7 @@
+it contains
+
+0 ~ 8630
+50001 ~ 63316
+100001 ~ 120090
+ 
+user reposistory data
